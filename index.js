@@ -90,7 +90,7 @@ async function getCourses() {
 //   // course.isPublished = false;
 //   // course.author = "Modified Author!";
 //   // Yukarıdaki kodlar yerine aşağıdaki kodlar da kullanılabilir.
-//   await course.set({
+//   course.set({
 //     isPublished: true,
 //     author: "Modified Author!",
 //   });
@@ -103,10 +103,53 @@ async function getCourses() {
 //--- 18. Video ---
 // async function updateCourse(id) {
 //   // Approach 2: Update first, update directly, optionally get the updated document
-//   //...
 
+//   // Kursta .update() metodu kullanılmış fakat bu metot artık yok. Onun yerine
+//   // .findOne() ile adım adım gidildi. Aşağıdaki diğer fonksiyonda başka bir
+//   // yöntem kullanıldı.
+//   const course = await Course.findOne({ _id: id });
+//   if (!course) {
+//     //course objesi NULL ise direkt böyle kontrol edebiliyor
+//     console.log("The course was not found!");
+//     return;
+//   }
+//   console.log(course);
+
+//   course.set({
+//     isPublished: true,
+//     author: "Modified Author!",
+//   });
+//   //console.log(course);
+
+//   const result = await course.save();
+//   console.log(result);
 // }
 
+async function updateCourse(id) {
+  // Approach 2: Update first, update directly, optionally get the updated document
+  // MongoDB update operator kısmına kendi web sitesinden bakılabilir.
+  // $currentDate, $inc, $min, $max, $mul, $rename, $set, $unSet, $setOnInsert ...vs
+  // Fakat burada kurstaki yöntem kullanılamadı için bu operatörlere gerek kalmadı !!!
+
+  // Aşağıdaki iki yöntem de çalışıyor...
+  // (1)
+  // const result = await Course.findByIdAndUpdate(id, {
+  //   isPublished: true,
+  //   author: "Modified Author!",
+  // });
+  // console.log(result);
+
+  // (2)
+  const result = await Course.findOneAndUpdate(id, {
+    isPublished: true,
+    author: "Modified Author!",
+  });
+  console.log(result);
+
+  const course = await Course.findOne({ _id: id });
+  console.log(course);
+}
+
 // MongoDB Compass'tan geçerli _id'ler alındı.
-//updateCourse("5a68fdf95db93f6477053ddd"); // not published
-//updateCourse("5a68fdd7bee8ea64649c2777"); // published
+//updateCourse("5a68fdf95db93f6477053ddd"); // not published course
+updateCourse("5a68fdd7bee8ea64649c2777"); // published course
